@@ -62,6 +62,10 @@ public class AbstractApplicationContext extends DefaultResourceLoader
     /** ResourcePatternResolver used by this context. */
     private ResourcePatternResolver resourcePatternResolver;
 
+    /** Parent context. */
+    @Nullable
+    private ApplicationContext parent;
+
     /**
      * Create a new AbstractApplicationContext with no parent.
      */
@@ -83,6 +87,13 @@ public class AbstractApplicationContext extends DefaultResourceLoader
     }
 
     private void setParent(ApplicationContext parent) {
+        this.parent = parent;
+        if (parent != null) {
+            Environment parentEnvironment = parent.getEnvironment();
+            if (parentEnvironment instanceof ConfigurableEnvironment) {
+                getEnvironment().merge((ConfigurableEnvironment) parentEnvironment);
+            }
+        }
     }
 
 
